@@ -146,7 +146,7 @@
           setDifficulty();
         } else if (e.code === 'KeyW' && rightPaddle.y > 0) {
           rightPaddle.speed = -5;
-        } else if (e.code === 'KeyS' && rightPaddle.y + rightPaddle.height < canvas.height) {
+        } else if (e.code === 'KeyS' && rightPaddle.y > 0) {
           rightPaddle.speed = 5;
         }
       }
@@ -195,4 +195,3 @@
   </script>
 </body>
 </html>
-
