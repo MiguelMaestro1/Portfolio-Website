@@ -28,7 +28,7 @@
       let scoreLimit = 5;
       let difficulty = 'Medium'; // Default difficulty level
       let ballSpeedMultiplier = 1; // Multiplier for ball speed based on difficulty
-      let maxBounceAngle = Math.PI / 4; // Maximum bounce angle in radians
+      let maxBounceAngle = Math.PI / 2; // Maximum bounce angle in radians
 
       function draw() {
         // Clear canvas
@@ -102,7 +102,7 @@
           ) {
             ball.speedX = -ball.speedX;
             // Adjust bounce angle slightly for unpredictability
-            ball.speedY += Math.random() * 20 - 1;
+            ball.speedY += Math.random() * 45 - 10;
             // Limit the bounce angle to ensure it doesn't become too steep
             ball.speedY = Math.min(Math.max(ball.speedY, -maxBounceAngle), maxBounceAngle);
           }
