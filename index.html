@@ -102,7 +102,7 @@
           ) {
             ball.speedX = -ball.speedX;
             // Adjust bounce angle slightly for unpredictability
-            ball.speedY += Math.random() * 2 - 1;
+            ball.speedY += Math.random() * 45 - 10;
             // Limit the bounce angle to ensure it doesn't become too steep
             ball.speedY = Math.min(Math.max(ball.speedY, -maxBounceAngle), maxBounceAngle);
           }
