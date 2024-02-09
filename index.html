@@ -144,7 +144,7 @@
             rightPaddle.speed = 0; // Make right paddle stay still on game restart
           }
           isGameRunning = true;
-          setDifficulty()
+          setDifficulty();
         } else if (e.code === 'KeyW' && rightPaddle.y > 0) {
           rightPaddle.speed = -5;
         } else if (e.code === 'KeyS' && rightPaddle.y > 0) {
@@ -157,6 +157,7 @@
         if (e.code === 'KeyW' || e.code === 'KeyS') {
           rightPaddle.speed = 0;
         }
+      }
 
       function setDifficulty() {
         // Set difficulty level based on user input
@@ -192,8 +193,10 @@
       document.addEventListener('keydown', difficultySelection, false);
       document.addEventListener('keydown', keyDownHandler, false);
 
+
       gameLoop();
     });
+
 
   </script>
 </body>
