@@ -144,6 +144,10 @@
           }
           isGameRunning = true;
           setDifficulty();
+        } else if (e.code === 'KeyW' && rightPaddle.y > 0) {
+          rightPaddle.speed = -5;
+        } else if (e.code === 'KeyS' && rightPaddle.y + rightPaddle.height < canvas.height) {
+          rightPaddle.speed = 5;
         }
       }
 
