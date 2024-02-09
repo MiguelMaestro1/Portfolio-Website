@@ -144,15 +144,25 @@
             rightPaddle.speed = 0; // Make right paddle stay still on game restart
           }
           isGameRunning = true;
-          setDifficulty();
+          setDifficulty()
+        } else if (e.code === 'KeyW' && rightPaddle.y > 0) {
+          rightPaddle.speed = -5;
+        } else if (e.code === 'KeyS' && rightPaddle.y > 0) {
+          rightPaddle.speed = 5;
         }
       }
+
+      function keyUpHandler(e) {
+        // Player controls for the right paddle
+        if (e.code === 'KeyW' || e.code === 'KeyS') {
+          rightPaddle.speed = 0;
+        }
 
       function setDifficulty() {
         // Set difficulty level based on user input
         if (difficulty === 'Easy') {
           ballSpeedMultiplier = 0.7;
-          leftPaddle.speed = 2; // Adjust AI speed for easy difficulty
+          leftPaddle.speed = 3; // Adjust AI speed for easy difficulty
         } else if (difficulty === 'Medium') {
           ballSpeedMultiplier = 1;
           leftPaddle.speed = 5; // Adjust AI speed for medium difficulty
@@ -184,6 +194,7 @@
 
       gameLoop();
     });
+
   </script>
 </body>
 </html>
