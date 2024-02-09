@@ -21,14 +21,14 @@
 
       // Initial game state
       let ball = { x: canvas.width / 2, y: canvas.height / 2, radius: 10, speedX: 5, speedY: 5 };
-      let leftPaddle = { x: 0, y: canvas.height / 2 - 30, width: 10, height: 60, speed: 5 };
+      let leftPaddle = { x: 0, y: canvas.height / 2 - 30, width: 10, height: 60, speed: 0 };
       let rightPaddle = { x: canvas.width - 10, y: canvas.height / 2 - 30, width: 10, height: 60, speed: 0 };
       let score = { player1: 0, player2: 0 };
       let isGameRunning = false;
       let scoreLimit = 5;
       let difficulty = 'Medium'; // Default difficulty level
       let ballSpeedMultiplier = 1; // Multiplier for ball speed based on difficulty
-      let maxBounceAngle = Math.PI / 2; // Maximum bounce angle in radians
+      let maxBounceAngle = Math.PI / 4; // Maximum bounce angle in radians
 
       function draw() {
         // Clear canvas
@@ -102,7 +102,7 @@
           ) {
             ball.speedX = -ball.speedX;
             // Adjust bounce angle slightly for unpredictability
-            ball.speedY += Math.random() * 45 - 10;
+            ball.speedY += Math.random() * 2 - 1;
             // Limit the bounce angle to ensure it doesn't become too steep
             ball.speedY = Math.min(Math.max(ball.speedY, -maxBounceAngle), maxBounceAngle);
           }
@@ -144,17 +144,6 @@
           }
           isGameRunning = true;
           setDifficulty();
-        } else if (e.code === 'KeyW' && rightPaddle.y > 0) {
-          rightPaddle.speed = -5;
-        } else if (e.code === 'KeyS' && rightPaddle.y > 0) {
-          rightPaddle.speed = 5;
-        }
-      }
-
-      function keyUpHandler(e) {
-        // Player controls for the right paddle
-        if (e.code === 'KeyW' || e.code === 'KeyS') {
-          rightPaddle.speed = 0;
         }
       }
 
@@ -162,10 +151,13 @@
         // Set difficulty level based on user input
         if (difficulty === 'Easy') {
           ballSpeedMultiplier = 0.7;
+          leftPaddle.speed = 2; // Adjust AI speed for easy difficulty
         } else if (difficulty === 'Medium') {
           ballSpeedMultiplier = 1;
+          leftPaddle.speed = 5; // Adjust AI speed for medium difficulty
         } else if (difficulty === 'Hard') {
           ballSpeedMultiplier = 1.5;
+          leftPaddle.speed = 8; // Adjust AI speed for hard difficulty
         }
       }
 
@@ -188,7 +180,6 @@
 
       document.addEventListener('keydown', difficultySelection, false);
       document.addEventListener('keydown', keyDownHandler, false);
-      document.addEventListener('keyup', keyUpHandler, false);
 
       gameLoop();
     });
