@@ -130,9 +130,9 @@
       function resetGame() {
         ball.x = canvas.width / 2;
         ball.y = canvas.height / 2;
+        ball.speedY = Math.random() * 30 - 5;
         leftPaddle.y = canvas.height / 2 - leftPaddle.height / 2;
         rightPaddle.y = canvas.height / 2 - rightPaddle.height / 2;
-        ball.speedY = Math.random() * 30 - 5;
       }
 
       function keyDownHandler(e) {
