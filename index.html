@@ -13,6 +13,12 @@
   <title>Pong Game</title>
 </head>
 <body>
+  <!-- Background music -->
+  <audio id="bgMusic" autoplay loop>
+    <source src="background_music.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  
   <canvas id="pongCanvas" width="800" height="400"></canvas>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -21,7 +27,7 @@
 
       // Initial game state
       let ball = { x: canvas.width / 2, y: canvas.height / 2, radius: 10, speedX: 5, speedY: 5 };
-      let leftPaddle = { x: 0, y: canvas.height / 2 - 30, width: 10, height: 60, speed: 0 };
+      let leftPaddle = { x: 0, y: canvas.height / 2 - 30, width: 10, height: 60, speed: 5 };
       let rightPaddle = { x: canvas.width - 10, y: canvas.height / 2 - 30, width: 10, height: 60, speed: 0 };
       let score = { player1: 0, player2: 0 };
       let isGameRunning = false;
@@ -88,7 +94,7 @@
 
           // Ball collisions with walls
           if (ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height) {
-            ball.speedY = -ball.speedY;
+            ball.speedY = -1.1 * ball.speedY;
           }
 
           // Ball collisions with paddles
@@ -100,9 +106,9 @@
               ball.y > rightPaddle.y &&
               ball.y < rightPaddle.y + rightPaddle.height)
           ) {
-            ball.speedX = -ball.speedX;
+            ball.speedX = -1.1 * ball.speedX;
             // Adjust bounce angle slightly for unpredictability
-            ball.speedY += Math.random() * 45 - 10;
+            ball.speedY += Math.random();
             // Limit the bounce angle to ensure it doesn't become too steep
             ball.speedY = Math.min(Math.max(ball.speedY, -maxBounceAngle), maxBounceAngle);
           }
@@ -110,10 +116,12 @@
           // Ball out of bounds
           if (ball.x - ball.radius < 0) {
             score.player2++;
+            ball.speedX = 5
             checkWinner();
             resetGame();
           } else if (ball.x + ball.radius > canvas.width) {
             score.player1++;
+            ball.speedX = -5
             checkWinner();
             resetGame();
           }
@@ -130,7 +138,6 @@
       function resetGame() {
         ball.x = canvas.width / 2;
         ball.y = canvas.height / 2;
-        ball.speedY = Math.random() * 30 - 5;
         leftPaddle.y = canvas.height / 2 - leftPaddle.height / 2;
         rightPaddle.y = canvas.height / 2 - rightPaddle.height / 2;
       }
@@ -147,7 +154,7 @@
           setDifficulty();
         } else if (e.code === 'KeyW' && rightPaddle.y > 0) {
           rightPaddle.speed = -5;
-        } else if (e.code === 'KeyS' && rightPaddle.y > 0) {
+        } else if (e.code === 'KeyS' && rightPaddle.y + rightPaddle.height < canvas.height) {
           rightPaddle.speed = 5;
         }
       }
@@ -163,13 +170,10 @@
         // Set difficulty level based on user input
         if (difficulty === 'Easy') {
           ballSpeedMultiplier = 0.7;
-          leftPaddle.speed = 3; // Adjust AI speed for easy difficulty
         } else if (difficulty === 'Medium') {
           ballSpeedMultiplier = 1;
-          leftPaddle.speed = 5; // Adjust AI speed for medium difficulty
         } else if (difficulty === 'Hard') {
           ballSpeedMultiplier = 1.5;
-          leftPaddle.speed = 8; // Adjust AI speed for hard difficulty
         }
       }
 
@@ -192,12 +196,10 @@
 
       document.addEventListener('keydown', difficultySelection, false);
       document.addEventListener('keydown', keyDownHandler, false);
-
+      document.addEventListener('keyup', keyUpHandler, false);
 
       gameLoop();
     });
-
-
   </script>
 </body>
 </html>
