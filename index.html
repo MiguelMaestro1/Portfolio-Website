@@ -28,7 +28,7 @@
       // Initial game state
       let ball = { x: canvas.width / 2, y: canvas.height / 2, radius: 10, speedX: 5, speedY: 5 };
       let leftPaddle = { x: 0, y: canvas.height / 2 - 30, width: 10, height: 60, speed: 5 };
-      let rightPaddle = { x: canvas.width - 10, y: canvas.height / 2 - 30, width: 10, height: 60, speed: 0 };
+      let rightPaddle = { x: canvas.width - 10, y: canvas.height / 2 - 30, width: 10, height: 60, speed: 5 };
       let score = { player1: 0, player2: 0 };
       let isGameRunning = false;
       let scoreLimit = 5;
@@ -81,7 +81,7 @@
       function update() {
         if (isGameRunning && score.player1 < scoreLimit && score.player2 < scoreLimit) {
           // Move paddles
-          leftPaddle.y += (ball.y - (leftPaddle.y + leftPaddle.height / 2)) * (leftPaddle.speed / 100);
+          leftPaddle.y += leftPaddle.speed
           rightPaddle.y += rightPaddle.speed;
 
           // Ensure paddles stay within the playing area
@@ -94,7 +94,7 @@
 
           // Ball collisions with walls
           if (ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height) {
-            ball.speedY = -1.1 * ball.speedY;
+            ball.speedY = -1.01 * ball.speedY;
           }
 
           // Ball collisions with paddles
@@ -106,11 +106,8 @@
               ball.y > rightPaddle.y &&
               ball.y < rightPaddle.y + rightPaddle.height)
           ) {
-            ball.speedX = -1.1 * ball.speedX;
-            // Adjust bounce angle slightly for unpredictability
-            ball.speedY += Math.random();
-            // Limit the bounce angle to ensure it doesn't become too steep
-            ball.speedY = Math.min(Math.max(ball.speedY, -maxBounceAngle), maxBounceAngle);
+            ball.speedX = -1.01 * ball.speedX;
+            ball.speedY > -5 && ball.speedY < 5
           }
 
           // Ball out of bounds
@@ -132,12 +129,14 @@
         if (score.player1 === scoreLimit || score.player2 === scoreLimit) {
           isGameRunning = false;
           rightPaddle.speed = 0; // Make right paddle stay still
+          leftPaddle.speed = 0;
         }
       }
 
       function resetGame() {
         ball.x = canvas.width / 2;
         ball.y = canvas.height / 2;
+        ball.speedY = 6
         leftPaddle.y = canvas.height / 2 - leftPaddle.height / 2;
         rightPaddle.y = canvas.height / 2 - rightPaddle.height / 2;
       }
@@ -149,10 +148,17 @@
             score.player1 = 0;
             score.player2 = 0;
             rightPaddle.speed = 0; // Make right paddle stay still on game restart
+            leftPaddle.speed = 0;
           }
+
           isGameRunning = true;
           setDifficulty();
-        } else if (e.code === 'KeyW' && rightPaddle.y > 0) {
+        } else if (e.code === 'KeyDown' && leftPaddle.y > 0) {
+          leftPaddle.speed = -5;
+        } else if (e.code === 'KeyUp' && leftPaddle.y + leftPaddle.height < canvas.height) {
+          leftPaddle.speed = 5;
+        }
+         else if (e.code === 'KeyW' && rightPaddle.y > 0) {
           rightPaddle.speed = -5;
         } else if (e.code === 'KeyS' && rightPaddle.y + rightPaddle.height < canvas.height) {
           rightPaddle.speed = 5;
@@ -163,6 +169,9 @@
         // Player controls for the right paddle
         if (e.code === 'KeyW' || e.code === 'KeyS') {
           rightPaddle.speed = 0;
+        }
+        if (e.code === 'KeyUp' || e.code === 'KeyDown') {
+          leftPaddle.speed = 0;
         }
       }
 
@@ -196,10 +205,10 @@
 
       document.addEventListener('keydown', difficultySelection, false);
       document.addEventListener('keydown', keyDownHandler, false);
-      document.addEventListener('keyup', keyUpHandler, false);
+      document.addEventListener('keyup', keyUpHandler, false); 
 
-      gameLoop();
-    });
+      gameLoop(); 
+      })
   </script>
 </body>
 </html>
