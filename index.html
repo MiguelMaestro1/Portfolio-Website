@@ -28,7 +28,7 @@
       let scoreLimit = 5;
       let difficulty = 'Medium'; // Default difficulty level
       let ballSpeedMultiplier = 1; // Multiplier for ball speed based on difficulty
-      let maxBounceAngle = Math.PI / 4; // Maximum bounce angle in radians
+      let maxBounceAngle = Math.PI / 3; // Maximum bounce angle in radians
 
       function draw() {
         // Clear canvas
@@ -103,8 +103,6 @@
             ball.speedX = -ball.speedX;
             // Adjust bounce angle slightly for unpredictability
             ball.speedY += Math.random() * 2 - 1;
-            // Limit the bounce angle to ensure it doesn't become too steep
-            ball.speedY = Math.min(Math.max(ball.speedY, -maxBounceAngle), maxBounceAngle);
           }
 
           // Ball out of bounds
@@ -144,6 +142,10 @@
           }
           isGameRunning = true;
           setDifficulty();
+        } else if (e.code === 'KeyW' && rightPaddle.y > 0) {
+          rightPaddle.speed = -5;
+        } else if (e.code === 'KeyS' && rightPaddle.y + rightPaddle.height < canvas.height) {
+          rightPaddle.speed = 5;
         }
       }
 
@@ -151,13 +153,13 @@
         // Set difficulty level based on user input
         if (difficulty === 'Easy') {
           ballSpeedMultiplier = 0.7;
-          leftPaddle.speed = 2; // Adjust AI speed for easy difficulty
+          leftPaddle.speed = 5; // Adjust AI speed for easy difficulty
         } else if (difficulty === 'Medium') {
           ballSpeedMultiplier = 1;
-          leftPaddle.speed = 5; // Adjust AI speed for medium difficulty
+          leftPaddle.speed = 9; // Adjust AI speed for medium difficulty
         } else if (difficulty === 'Hard') {
           ballSpeedMultiplier = 1.5;
-          leftPaddle.speed = 8; // Adjust AI speed for hard difficulty
+          leftPaddle.speed = 12; // Adjust AI speed for hard difficulty
         }
       }
 
