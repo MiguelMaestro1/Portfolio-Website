@@ -13,12 +13,6 @@
   <title>Pong Game</title>
 </head>
 <body>
-  <!-- Background music -->
-  <audio id="bgMusic" autoplay loop>
-    <source src="background_music.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
-  
   <canvas id="pongCanvas" width="800" height="400"></canvas>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -27,8 +21,8 @@
 
       // Initial game state
       let ball = { x: canvas.width / 2, y: canvas.height / 2, radius: 10, speedX: 5, speedY: 5 };
-      let leftPaddle = { x: 0, y: canvas.height / 2 - 30, width: 10, height: 60, speed: 5 };
-      let rightPaddle = { x: canvas.width - 10, y: canvas.height / 2 - 30, width: 10, height: 60, speed: 5 };
+      let leftPaddle = { x: 0, y: canvas.height / 2 - 30, width: 10, height: 60, speed: 0 };
+      let rightPaddle = { x: canvas.width - 10, y: canvas.height / 2 - 30, width: 10, height: 60, speed: 0 };
       let score = { player1: 0, player2: 0 };
       let isGameRunning = false;
       let scoreLimit = 5;
@@ -81,7 +75,7 @@
       function update() {
         if (isGameRunning && score.player1 < scoreLimit && score.player2 < scoreLimit) {
           // Move paddles
-          leftPaddle.y += leftPaddle.speed
+          leftPaddle.y += (ball.y - (leftPaddle.y + leftPaddle.height / 2)) * (leftPaddle.speed / 100);
           rightPaddle.y += rightPaddle.speed;
 
           // Ensure paddles stay within the playing area
@@ -94,7 +88,7 @@
 
           // Ball collisions with walls
           if (ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height) {
-            ball.speedY = -1.01 * ball.speedY;
+            ball.speedY = -ball.speedY;
           }
 
           // Ball collisions with paddles
@@ -106,19 +100,20 @@
               ball.y > rightPaddle.y &&
               ball.y < rightPaddle.y + rightPaddle.height)
           ) {
-            ball.speedX = -1.01 * ball.speedX;
-            ball.speedY > -5 && ball.speedY < 5
+            ball.speedX = -ball.speedX;
+            // Adjust bounce angle slightly for unpredictability
+            ball.speedY += Math.random() * 2 - 1;
+            // Limit the bounce angle to ensure it doesn't become too steep
+            ball.speedY = Math.min(Math.max(ball.speedY, -maxBounceAngle), maxBounceAngle);
           }
 
           // Ball out of bounds
           if (ball.x - ball.radius < 0) {
             score.player2++;
-            ball.speedX = 5
             checkWinner();
             resetGame();
           } else if (ball.x + ball.radius > canvas.width) {
             score.player1++;
-            ball.speedX = -5
             checkWinner();
             resetGame();
           }
@@ -129,14 +124,12 @@
         if (score.player1 === scoreLimit || score.player2 === scoreLimit) {
           isGameRunning = false;
           rightPaddle.speed = 0; // Make right paddle stay still
-          leftPaddle.speed = 0;
         }
       }
 
       function resetGame() {
         ball.x = canvas.width / 2;
         ball.y = canvas.height / 2;
-        ball.speedY = 6
         leftPaddle.y = canvas.height / 2 - leftPaddle.height / 2;
         rightPaddle.y = canvas.height / 2 - rightPaddle.height / 2;
       }
@@ -148,30 +141,9 @@
             score.player1 = 0;
             score.player2 = 0;
             rightPaddle.speed = 0; // Make right paddle stay still on game restart
-            leftPaddle.speed = 0;
           }
-
           isGameRunning = true;
           setDifficulty();
-        } else if (e.code === 'KeyDown' && leftPaddle.y > 0) {
-          leftPaddle.speed = -5;
-        } else if (e.code === 'KeyUp' && leftPaddle.y + leftPaddle.height < canvas.height) {
-          leftPaddle.speed = 5;
-        }
-         else if (e.code === 'KeyW' && rightPaddle.y > 0) {
-          rightPaddle.speed = -5;
-        } else if (e.code === 'KeyS' && rightPaddle.y + rightPaddle.height < canvas.height) {
-          rightPaddle.speed = 5;
-        }
-      }
-
-      function keyUpHandler(e) {
-        // Player controls for the right paddle
-        if (e.code === 'KeyW' || e.code === 'KeyS') {
-          rightPaddle.speed = 0;
-        }
-        if (e.code === 'KeyUp' || e.code === 'KeyDown') {
-          leftPaddle.speed = 0;
         }
       }
 
@@ -179,10 +151,13 @@
         // Set difficulty level based on user input
         if (difficulty === 'Easy') {
           ballSpeedMultiplier = 0.7;
+          leftPaddle.speed = 2; // Adjust AI speed for easy difficulty
         } else if (difficulty === 'Medium') {
           ballSpeedMultiplier = 1;
+          leftPaddle.speed = 5; // Adjust AI speed for medium difficulty
         } else if (difficulty === 'Hard') {
           ballSpeedMultiplier = 1.5;
+          leftPaddle.speed = 8; // Adjust AI speed for hard difficulty
         }
       }
 
@@ -205,10 +180,9 @@
 
       document.addEventListener('keydown', difficultySelection, false);
       document.addEventListener('keydown', keyDownHandler, false);
-      document.addEventListener('keyup', keyUpHandler, false); 
 
-      gameLoop(); 
-      })
+      gameLoop();
+    });
   </script>
 </body>
 </html>
